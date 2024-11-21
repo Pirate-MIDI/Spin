@@ -1,0 +1,22 @@
+{
+    "files.associations": {
+		"buttons.h": "c",
+		"click_definitions.h": "c",
+		"buttons_port.h": "c",
+		"definition_linker.h": "c",
+		"array": "cpp",
+		"*.tcc": "cpp",
+		"deque": "cpp",
+		"list": "cpp",
+		"string": "cpp",
+		"unordered_map": "cpp",
+		"unordered_set": "cpp",
+		"vector": "cpp",
+		"string_view": "cpp",
+		"memory": "cpp",
+		"random": "cpp",
+		"initializer_list": "cpp",
+		"*.ulp": "cpp"
+	},
+    "C_Cpp.dimInactiveRegions": true
+}

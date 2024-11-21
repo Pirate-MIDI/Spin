@@ -1,0 +1,18 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../../MCU-Libraries"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"buttons.h": "c",
+			"click_definitions.h": "c",
+			"buttons_port.h": "c",
+			"definition_linker.h": "c"
+		}
+	}
+}

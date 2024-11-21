@@ -1,0 +1,9 @@
+fortyseveneffects/MIDI Library@^5.0.2
+adafruit/Adafruit TinyUSB Library @^2.2.7
+https://github.com/rppicomidi/usb_midi_host.git
+https://github.com/samspencer5991/Device-Api.git
+adafruit/Adafruit NeoPixel@^1.11.0
+https://github.com/Pirate-MIDI/esp32-manager.git
+bblanchon/ArduinoJson@^7.0.2
+https://github.com/tzapu/WiFiManager.git
+lathoub/BLE-MIDI@^2.2
