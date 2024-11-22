@@ -11,11 +11,11 @@ void sendCheckResponse(uint8_t transport)
 	// Allocate the JSON document
 	JsonDocument doc;
 
-	doc["deviceModel"] = "uLoop+";
+	doc["deviceModel"] = "Spin";
 	doc["firmwareVersion"] = FW_VERSION;
 	doc["hardwareVersion"] = HW_VERSION;
 	doc["uId"] = ((ESP.getEfuseMac() << 40) >> 40);
-	doc["deviceName"] = "uLoop";
+	doc["deviceName"] = "Spin";
 	doc["profileId"] = 0;
 
 	if(transport == USB_CDC_TRANSPORT)

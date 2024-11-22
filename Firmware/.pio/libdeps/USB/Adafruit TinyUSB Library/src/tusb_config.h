@@ -22,8 +22,8 @@
  * THE SOFTWARE.
  */
 
-#ifndef _TUSB_CONFIG_ARDUINO_H_
-#define _TUSB_CONFIG_ARDUINO_H_
+#ifndef TUSB_CONFIG_ARDUINO_H_
+#define TUSB_CONFIG_ARDUINO_H_
 
 #ifdef __cplusplus
  extern "C" {
@@ -46,27 +46,24 @@
   #if CONFIG_IDF_TARGET_ESP32S2 || CONFIG_IDF_TARGET_ESP32S3
     #include "../../arduino_tinyusb/include/tusb_config.h"
   #else
-    #define CFG_TUSB_OS OPT_OS_FREERTOS
-    // clang-format off
-    #define CFG_TUSB_OS_INC_PATH freertos/
-    // clang-format on
-
     #include "arduino/ports/esp32/tusb_config_esp32.h"
   #endif
 
   // Note: For platformio prioritize this file over the one in BSP in all cases
 
+#elif defined(ARDUINO_ARCH_CH32) || defined(CH32V20x) || defined(CH32V30x)
+  #include "arduino/ports/ch32/tusb_config_ch32.h"
 #else
   #error TinyUSB Arduino Library does not support your core yet
 #endif
 
 // Debug TinyUSB with Serial1
 #if CFG_TUSB_DEBUG
-#define CFG_TUSB_DEBUG_PRINTF serial1_printf
+#define CFG_TUSB_DEBUG_PRINTF log_printf
 #endif
 
 #ifdef __cplusplus
  }
 #endif
 
-#endif /* _TUSB_CONFIG_ARDUINO_H_ */
+#endif

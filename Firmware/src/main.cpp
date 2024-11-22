@@ -1,22 +1,15 @@
 #include "spin.h"
 
 #include "Arduino.h"
-
-#include "midi_handling.h"
 #include "device_api.h"
-#include "wifi_management.h"
 
 const char* host = "Spin";
 const char* apName = "SpinAP";
 
 char deviceApiBuffer[8192];
 
-LEDBar ledBars[NUM_POTS];
-SPIClass * hspi = NULL;
 
-CONTPOT pots[NUM_POTS];
 
-void readPots();
 
 void setup()
 {
@@ -116,79 +109,23 @@ void setup()
 	Serial.print("Free PSRAM: %d");
 	Serial.println(ESP.getFreePsram());
 
+	midi_Init();
 	//wifi_Connect("uLoop", "uLoopAP", "password");	
 }
 
 void loop()
 {
+	midi_ReadAll();
 	readPots();
 	for(uint8_t i=0; i<NUM_POTS; i++)
-		ledBar_Update(&ledBars[i]);
+		//ledBar_Update(&ledBars[i]);
 
-	FastLED.show();
-	delay(1);
+	//astLED.show();
+	if(Serial.available())
+	{
+		deviceApi_Handler(deviceApiBuffer, 0);
+	}
 
 }
 
 
-void readPots()
-{
-    static uint16_t lastPotValues[NUM_POTS];
-    static uint8_t lastPotDirections[NUM_POTS];
-    int results[NUM_POTS*2];
-    // Read raw ADC values
-    results[0] = mcp3008_readADC(hspi, ADC_CS1_PIN, POT1A_CHANNEL, 0);
-    results[1] = mcp3008_readADC(hspi, ADC_CS1_PIN, POT1B_CHANNEL, 0);
-    results[2] = mcp3008_readADC(hspi, ADC_CS1_PIN, POT2A_CHANNEL, 0);
-    results[3] = mcp3008_readADC(hspi, ADC_CS1_PIN, POT2B_CHANNEL, 0);
-    results[4] = mcp3008_readADC(hspi, ADC_CS2_PIN, POT3A_CHANNEL, 0);
-    results[5] = mcp3008_readADC(hspi, ADC_CS2_PIN, POT3B_CHANNEL, 0);
-    results[6] = mcp3008_readADC(hspi, ADC_CS2_PIN, POT4A_CHANNEL, 0);
-    results[7] = mcp3008_readADC(hspi, ADC_CS2_PIN, POT4B_CHANNEL, 0);
-    results[8] = mcp3008_readADC(hspi, ADC_CS1_PIN, POT5A_CHANNEL, 0);
-    results[9] = mcp3008_readADC(hspi, ADC_CS1_PIN, POT5B_CHANNEL, 0);
-    results[10] = mcp3008_readADC(hspi, ADC_CS1_PIN, POT6A_CHANNEL, 0);
-    results[11] = mcp3008_readADC(hspi, ADC_CS1_PIN, POT6B_CHANNEL, 0);
-	 results[12] = mcp3008_readADC(hspi, ADC_CS2_PIN, POT7A_CHANNEL, 0);
-    results[13] = mcp3008_readADC(hspi, ADC_CS2_PIN, POT7B_CHANNEL, 0);
-    results[14] = mcp3008_readADC(hspi, ADC_CS2_PIN, POT8A_CHANNEL, 0);
-    results[15] = mcp3008_readADC(hspi, ADC_CS2_PIN, POT8B_CHANNEL, 0);
-
-    // Filter and process results
-    for(uint8_t i = 0; i < NUM_POTS; i++)
-    {
-        // Process absolute values
-        contPot_update(&pots[i], results[i*2], results[i*2+1]);
-        // Map filtered values to interface structure
-
-        int valueDelta = pots[i].pos - lastPotValues[i];  // Amount of change in the pot's absolute position
-        // Apply min/max boundaries
-        int tempPotValue = ledBars[i].value + valueDelta;
-        if(abs(valueDelta) < POT_WRAP_THRESHOLD)
-        {
-          if(tempPotValue < 0)
-          {
-            ledBars[i].value = 0;
-          }
-          else if(tempPotValue > 1023)
-          {
-            ledBars[i].value = 1023;
-          }
-          else
-          {
-            ledBars[i].value += valueDelta;
-          }
-        }
-
-        lastPotValues[i] = pots[i].pos;
-        lastPotDirections[i] = pots[i].dir;
-        char str[20];
-#ifdef SERIAL_PRINT_POTS
-        sprintf(str, "%d Pos: %4d %d  ", i+1, ledBars[i].value, pots[i].dir);
-        Serial.print(str);
-#endif
-    } 
-#ifdef SERIAL_PRINT_POTS
-    Serial.println();
-#endif
-}

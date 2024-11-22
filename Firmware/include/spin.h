@@ -1,11 +1,11 @@
 /*
- *  click.h
+ *  spin.h
  *
- *  Created on: Dec 8, 2022
+ *  Created on: Nov 20, 2024
  *  Author: samspencer
  */
-#ifndef ULOOP_H_
-#define ULOOP_H_
+#ifndef SPIN_H_
+#define SPIN_H_
 
 #include "stdint.h"
 //#include <Arduino.h>
@@ -15,6 +15,8 @@
 #include "led_bar.h"
 #include "mcp3008.h"
 #include "continuous_pot.h"
+#include "esp32_manager.h"
+#include "hardware_def.h"
 
 // Version
 #define XSTR(s) STR(s)
@@ -30,42 +32,9 @@
 #define TIP_BUTTON_INDEX  0
 #define RING_BUTTON_INDEX 1
 
-/* HARDWARE DEFINITIONS */
-// PINS
-#define LED_DATA_PIN					15
-
-#define MIDI_OUT_PIN        		43
-#define MIDI_IN_PIN             	44
-
-#define NUM_LEDS              	168
-#define NUM_LEDS_PER_RING			21
-#define NUM_POTS              	8
-
 #define DEFAULT_LED_BRIGHTNESS	20
 
-#define SPI_SCK_PIN			8
-#define SPI_MOSI_PIN			10
-#define SPI_MISO_PIN			46
 
-#define ADC_CS1_PIN           	0
-#define ADC_CS2_PIN           	3
-
-#define POT1A_CHANNEL   2
-#define POT1B_CHANNEL   3
-#define POT2A_CHANNEL   4
-#define POT2B_CHANNEL   5
-#define POT3A_CHANNEL   2
-#define POT3B_CHANNEL   3
-#define POT4A_CHANNEL   4
-#define POT4B_CHANNEL   5
-#define POT5A_CHANNEL   0
-#define POT5B_CHANNEL   1
-#define POT6A_CHANNEL   6
-#define POT6B_CHANNEL   7
-#define POT7A_CHANNEL   0
-#define POT7B_CHANNEL   1
-#define POT8A_CHANNEL   6
-#define POT8B_CHANNEL   7
 
 
 // MIDI DEFINITIONS //
@@ -90,18 +59,24 @@ typedef struct
 
 typedef struct
 {
-  	uint8_t bootState;
+	uint8_t bootState;
   	uint8_t midiInChannel;
-  	uint8_t currentPreset;
+  	uint8_t currentBank;
 	uint32_t profileId;
 	uint8_t ledBrightness;
+	Esp32Config esp32Config;
 	uint8_t blank[100];
-} Config;
+} GlobalSettings;
 
 extern Preset presets[];
-extern Config globalConfig;
+extern GlobalSettings globalSettings;
 
 extern char cdcRxBuf[];
+
+extern LEDBar ledBars[];
+extern SPIClass * hspi;
+
+extern CONTPOT pots[];
 
 
 // Function prototypes
@@ -119,7 +94,12 @@ void saveCurrentPreset();
 void readGlobalConfig();
 void saveGlobalConfig();
 
+
+//-------------------- CONTROL INTERFACE --------------------//
+void readPots();
+
+
 //-------------------- MIDI CALLBACK HANDLERS --------------------//
 void assignMidiCallbacks();
 
-#endif // ULOOP_H_ //
+#endif // SPIN_H_ //

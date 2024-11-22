@@ -1,10 +1,12 @@
+https://github.com/samspencer5991/Continuous-Pots.git
+fastled/FastLED@^3.6.0
+https://github.com/samspencer5991/mcp3008.git
+https://github.com/samspencer5991/esp32-manager.git
+lathoub/BLE-MIDI@^2.2
+bblanchon/ArduinoJson@^7.0.2
+https://github.com/samspencer5991/Device-Api.git
+https://github.com/samspencer5991/LED-Bar.git
+adafruit/Adafruit TinyUSB Library @3.3.1
 https://github.com/rppicomidi/usb_midi_host.git
 https://github.com/tzapu/WiFiManager.git
-https://github.com/Pirate-MIDI/esp32-manager.git
-bblanchon/ArduinoJson@^7.0.2
-lathoub/BLE-MIDI@^2.2
-adafruit/Adafruit TinyUSB Library @^2.2.7
-https://github.com/samspencer5991/Device-Api.git
-https://github.com/samspencer5991/mcp3008.git
 fortyseveneffects/MIDI Library@^5.0.2
-fastled/FastLED@^3.6.0

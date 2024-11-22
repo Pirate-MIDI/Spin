@@ -30,17 +30,11 @@
 
 #include "Adafruit_USBD_Video.h"
 
-#ifdef ARDUINO_ARCH_ESP32
-// static uint16_t hid_load_descriptor(uint8_t *dst, uint8_t *itf) {}
-#endif
+#define BULK_PACKET_SIZE (TUD_OPT_HIGH_SPEED ? 512 : 64)
 
 Adafruit_USBD_Video::Adafruit_USBD_Video(void) {
   _vc_id = 0;
   memset(&_camera_terminal, 0, sizeof(_camera_terminal));
-
-#ifdef ARDUINO_ARCH_ESP32
-//  tinyusb_enable_interface(USB_INTERFACE_HID, desc_len, hid_load_descriptor);
-#endif
 }
 
 bool Adafruit_USBD_Video::addTerminal(
@@ -238,8 +232,8 @@ uint16_t Adafruit_USBD_Video::getInterfaceDescriptor(uint8_t itfnum_deprecated,
              .bDescriptorType = TUSB_DESC_ENDPOINT,
 
              .bEndpointAddress = ep_in,
-             .bmAttributes = {.xfer = TUSB_XFER_BULK, .sync = 0},
-             .wMaxPacketSize = 64,
+             .bmAttributes = {.xfer = TUSB_XFER_BULK, .sync = 0, .usage = 0},
+             .wMaxPacketSize = BULK_PACKET_SIZE,
              .bInterval = 1}};
 
   uint16_t const len_iad = sizeof(desc_iad);

@@ -14,9 +14,14 @@
 CRGB leds[NUM_LEDS];
 
 Preset presets[NUM_PRESETS];
-Config globalConfig;
-Preset* currentPresetPtr = &presets[globalConfig.currentPreset];
+GlobalSettings globalSettings;
+Preset* currentBankPtr = &presets[globalSettings.currentBank];
 Preferences storage;
+
+LEDBar ledBars[NUM_POTS];
+SPIClass * hspi = NULL;
+
+CONTPOT pots[NUM_POTS];
 
 void softwareReset();
 
@@ -24,7 +29,7 @@ void setChannel(uint8_t channel, uint8_t channelState);
 
 void handleControlChange(MidiInterfaceType interface, uint8_t channel, uint8_t number, uint8_t value);
 void handleProgramChange(MidiInterfaceType interface, uint8_t channel, uint8_t number);
-void handleSysEx(MidiInterfaceType interface, uint8_t* array, unsigned size);
+void handleGeneralSysEx(MidiInterfaceType interface, uint8_t* array, unsigned size);
 
 //--------------------- SYSTEM & EVENT HANDLERS ---------------------//
 void bootCheck()
@@ -32,11 +37,11 @@ void bootCheck()
 	// Check if the device has been configured
 	Serial.println("Checking boot state...");
 	storage.begin("global", false);
-	size_t len = storage.getBytes("config", &globalConfig, sizeof(Config));
+	size_t len = storage.getBytes("config", &globalSettings, sizeof(GlobalSettings));
 	storage.end();
 	// Uncomment to force a new device configuration
-	globalConfig.bootState = 0;
-	if(globalConfig.bootState != DEVICE_CONFIGURED_VALUE || len != sizeof(Config))
+	globalSettings.bootState = 0;
+	if(globalSettings.bootState != DEVICE_CONFIGURED_VALUE || len != sizeof(GlobalSettings))
 	{
 		Serial.println("Configuring new device...");
 		newDeviceConfig();
@@ -52,11 +57,11 @@ void bootCheck()
 void newDeviceConfig()
 {
 	// Configure default values for global settings
-	globalConfig.bootState = DEVICE_CONFIGURED_VALUE;
-	globalConfig.currentPreset = 0;
-	globalConfig.midiInChannel = MIDI_CHANNEL_OMNI;
-	globalConfig.profileId = 0;
-	globalConfig.ledBrightness = DEFAULT_LED_BRIGHTNESS;
+	globalSettings.bootState = DEVICE_CONFIGURED_VALUE;
+	globalSettings.currentBank = 0;
+	globalSettings.midiInChannel = MIDI_CHANNEL_OMNI;
+	globalSettings.profileId = 0;
+	globalSettings.ledBrightness = DEFAULT_LED_BRIGHTNESS;
 	FastLED.setBrightness(DEFAULT_LED_BRIGHTNESS);
 	
 	
@@ -66,7 +71,7 @@ void newDeviceConfig()
 
 	// Save the default config to eeprom
 	storage.begin("global", false);
-	size_t len = storage.putBytes("config", &globalConfig, sizeof(Config));
+	size_t len = storage.putBytes("config", &globalSettings, sizeof(GlobalSettings));
 	Serial.printf("Wrote global config to storage with size %d.\n", len);
 
 	// Save the default presets to eeprom
@@ -79,7 +84,7 @@ void newDeviceConfig()
 
 void standardBoot()
 {
-	FastLED.setBrightness(globalConfig.ledBrightness);
+	FastLED.setBrightness(globalSettings.ledBrightness);
 	// Read the preset data into the struct array
 	storage.getBytes("presets", presets, sizeof(Preset)*NUM_PRESETS);
 }
@@ -111,60 +116,60 @@ void initPins()
 }
 
 //--------------------- PRESET MANAGEMENT ---------------------//
-void readCurrentPreset()
+void readcurrentBank()
 {
-  EEPROM.get(sizeof(Config) + sizeof(Preset) * globalConfig.currentPreset,
-                *currentPresetPtr);
+  EEPROM.get(sizeof(GlobalSettings) + sizeof(Preset) * globalSettings.currentBank,
+                *currentBankPtr);
 }
 
-void saveCurrentPreset()
+void savecurrentBank()
 {
-  EEPROM.put(sizeof(Config) + sizeof(Preset) * globalConfig.currentPreset,
-                *currentPresetPtr);
+  EEPROM.put(sizeof(GlobalSettings) + sizeof(Preset) * globalSettings.currentBank,
+                *currentBankPtr);
   EEPROM.commit();
   delay(1);
 }
 
-void readGlobalConfig()
+void readglobalSettings()
 {
-  EEPROM.get(sizeof(Config) + sizeof(Preset) * globalConfig.currentPreset,
-                *currentPresetPtr);
+  EEPROM.get(sizeof(GlobalSettings) + sizeof(Preset) * globalSettings.currentBank,
+                *currentBankPtr);
 }
 
-void saveGlobalConfig()
+void saveglobalSettings()
 {
-  EEPROM.put(0, globalConfig);
+  EEPROM.put(0, globalSettings);
   EEPROM.commit();
 }
 
 void presetUp()
 {
   // Increment presets
-  if(globalConfig.currentPreset >= NUM_PRESETS)
+  if(globalSettings.currentBank >= NUM_PRESETS)
   {
-    globalConfig.currentPreset = 0;
+    globalSettings.currentBank = 0;
   }
   else
   {
-    globalConfig.currentPreset++;
+    globalSettings.currentBank++;
   }
-  readCurrentPreset();
-  saveGlobalConfig();
+  readcurrentBank();
+  saveglobalSettings();
 }
 
 void presetDown()
 {
   // Increment presets
-  if(globalConfig.currentPreset == 0)
+  if(globalSettings.currentBank == 0)
   {
-    globalConfig.currentPreset = NUM_PRESETS;
+    globalSettings.currentBank = NUM_PRESETS;
   }
   else
   {
-    globalConfig.currentPreset--;
+    globalSettings.currentBank--;
   }
-  readCurrentPreset();
-  saveGlobalConfig();
+  readcurrentBank();
+  saveglobalSettings();
 }
 
 void goToPreset(uint8_t newPreset)
@@ -173,9 +178,73 @@ void goToPreset(uint8_t newPreset)
   {
     return;
   }
-  globalConfig.currentPreset = newPreset;
-  readCurrentPreset();
-  saveGlobalConfig();
+  globalSettings.currentBank = newPreset;
+  readcurrentBank();
+  saveglobalSettings();
+}
+
+
+//--------------------- CONTROL INTERFACE ---------------------//
+void readPots()
+{
+    static uint16_t lastPotValues[NUM_POTS];
+    static uint8_t lastPotDirections[NUM_POTS];
+    int results[NUM_POTS*2];
+    // Read raw ADC values
+    results[0] = mcp3008_readADC(hspi, ADC_CS1_PIN, POT1A_CHANNEL, 0);
+    results[1] = mcp3008_readADC(hspi, ADC_CS1_PIN, POT1B_CHANNEL, 0);
+    results[2] = mcp3008_readADC(hspi, ADC_CS1_PIN, POT2A_CHANNEL, 0);
+    results[3] = mcp3008_readADC(hspi, ADC_CS1_PIN, POT2B_CHANNEL, 0);
+    results[4] = mcp3008_readADC(hspi, ADC_CS2_PIN, POT3A_CHANNEL, 0);
+    results[5] = mcp3008_readADC(hspi, ADC_CS2_PIN, POT3B_CHANNEL, 0);
+    results[6] = mcp3008_readADC(hspi, ADC_CS2_PIN, POT4A_CHANNEL, 0);
+    results[7] = mcp3008_readADC(hspi, ADC_CS2_PIN, POT4B_CHANNEL, 0);
+    results[8] = mcp3008_readADC(hspi, ADC_CS1_PIN, POT5A_CHANNEL, 0);
+    results[9] = mcp3008_readADC(hspi, ADC_CS1_PIN, POT5B_CHANNEL, 0);
+    results[10] = mcp3008_readADC(hspi, ADC_CS1_PIN, POT6A_CHANNEL, 0);
+    results[11] = mcp3008_readADC(hspi, ADC_CS1_PIN, POT6B_CHANNEL, 0);
+	 results[12] = mcp3008_readADC(hspi, ADC_CS2_PIN, POT7A_CHANNEL, 0);
+    results[13] = mcp3008_readADC(hspi, ADC_CS2_PIN, POT7B_CHANNEL, 0);
+    results[14] = mcp3008_readADC(hspi, ADC_CS2_PIN, POT8A_CHANNEL, 0);
+    results[15] = mcp3008_readADC(hspi, ADC_CS2_PIN, POT8B_CHANNEL, 0);
+
+    // Filter and process results
+    for(uint8_t i = 0; i < NUM_POTS; i++)
+    {
+        // Process absolute values
+        contPot_update(&pots[i], results[i*2], results[i*2+1]);
+        // Map filtered values to interface structure
+
+        int valueDelta = pots[i].pos - lastPotValues[i];  // Amount of change in the pot's absolute position
+        // Apply min/max boundaries
+        int tempPotValue = ledBars[i].value + valueDelta;
+        if(abs(valueDelta) < POT_WRAP_THRESHOLD)
+        {
+          if(tempPotValue < 0)
+          {
+            ledBars[i].value = 0;
+          }
+          else if(tempPotValue > 1023)
+          {
+            ledBars[i].value = 1023;
+          }
+          else
+          {
+            ledBars[i].value += valueDelta;
+          }
+        }
+
+        lastPotValues[i] = pots[i].pos;
+        lastPotDirections[i] = pots[i].dir;
+        char str[20];
+#ifdef SERIAL_PRINT_POTS
+        sprintf(str, "%d Pos: %4d %d  ", i+1, ledBars[i].value, pots[i].dir);
+        Serial.print(str);
+#endif
+    } 
+#ifdef SERIAL_PRINT_POTS
+    Serial.println();
+#endif
 }
 
 
@@ -184,16 +253,17 @@ void assignMidiCallbacks()
 {
 	midi_AssignControlChangeCallback(handleControlChange);
 	midi_AssignProgramChangeCallback(handleProgramChange);
-	midi_AssignSysemExclusiveCallback(handleSysEx);
+	midi_AssignSysemExclusiveCallback(handleGeneralSysEx);
 }
 
+// Spin application specific MIDI callbacks
 void handleControlChange(MidiInterfaceType interface, uint8_t channel, uint8_t number, uint8_t value)
 {
   	
 	// Save current preset
 	if (number == SAVE_CURRENT_PRESET_CC)
 	{
-		saveCurrentPreset();
+		savecurrentBank();
 	}
 	// Preset up
 	else if (number == PRESET_UP_CC)
@@ -217,7 +287,7 @@ void handleProgramChange(MidiInterfaceType interface, uint8_t channel, uint8_t n
 
 }
 
-void handleSysEx(MidiInterfaceType interface, uint8_t* array, unsigned size)
+void handleGeneralSysEx(MidiInterfaceType interface, uint8_t* array, unsigned size)
 {
 
 }
