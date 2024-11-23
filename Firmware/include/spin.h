@@ -88,6 +88,7 @@ void standardBoot();
 void getFlashUid(char* str);
 
 void initPins();
+void initLedBars();
 //-------------------- PRESET MANAGEMENT --------------------//
 void readCurrentPreset();
 void saveCurrentPreset();

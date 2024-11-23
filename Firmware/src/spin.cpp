@@ -10,6 +10,8 @@
 #include <Preferences.h>
 #include <nvs_flash.h>
 #include "led_bar.h"
+#include "pca9555.h"
+#include "Wire.h"
 
 CRGB leds[NUM_LEDS];
 
@@ -19,9 +21,12 @@ Preset* currentBankPtr = &presets[globalSettings.currentBank];
 Preferences storage;
 
 LEDBar ledBars[NUM_POTS];
-SPIClass * hspi = NULL;
+SPIClass* hspi = NULL;
 
 CONTPOT pots[NUM_POTS];
+
+PCA9555 pca9555(PCA9555_ADDRESS, PCA9555_INT_PIN);
+
 
 void softwareReset();
 
@@ -112,7 +117,48 @@ void getFlashUid(char* str)
 void initPins()
 {
 	// Configure pins and peripherals
+	// ADC CS pins and SPI peripheral
+	
+	pinMode(ADC_CS1_PIN, OUTPUT);
+	pinMode(ADC_CS2_PIN, OUTPUT);
+	hspi = new SPIClass(HSPI);
+	hspi->begin(SPI_SCK_PIN, SPI_MISO_PIN, SPI_MOSI_PIN);
+	
+	// PCA9555 IO expander
+	Wire.setPins(I2C1_SDA_PIN, I2C1_SCL_PIN);
+	Wire.begin();
+	pca9555.setClock(400000);
+	Serial.println(pca9555.begin());
+	pca9555.pinMode(ENC1_SW_CHANNEL, INPUT_PULLDOWN);
+	pca9555.pinMode(ENC2_SW_CHANNEL, INPUT_PULLDOWN);
 
+	pca9555.pinMode(ENC1_RED_CHANNEL, OUTPUT);
+	pca9555.pinMode(ENC1_GREEN_CHANNEL, OUTPUT);
+	pca9555.pinMode(ENC1_BLUE_CHANNEL, OUTPUT);
+	pca9555.pinMode(ENC2_RED_CHANNEL, OUTPUT);
+	pca9555.pinMode(ENC2_GREEN_CHANNEL, OUTPUT);
+	pca9555.pinMode(ENC2_BLUE_CHANNEL, OUTPUT);
+
+	pca9555.pinMode(USBH_ENABLE_CHANNEL, OUTPUT);
+	pca9555.pinMode(USBH_CHARGE_CHANNEL, OUTPUT);
+	pca9555.pinMode(USBH_VBUS_SENSE_CHANNEL, INPUT);
+
+	pca9555.digitalWrite(ENC1_RED_CHANNEL, HIGH);
+	pca9555.digitalWrite(ENC2_RED_CHANNEL, HIGH);
+
+	pca9555.digitalWrite(ENC1_GREEN_CHANNEL, LOW);
+	pca9555.digitalWrite(ENC1_BLUE_CHANNEL, HIGH);
+	pca9555.digitalWrite(ENC2_GREEN_CHANNEL, LOW);
+	pca9555.digitalWrite(ENC2_BLUE_CHANNEL, HIGH);
+
+	pca9555.digitalWrite(USBH_ENABLE_CHANNEL, HIGH);
+	pca9555.digitalWrite(USBH_CHARGE_CHANNEL, HIGH);
+
+	// Reset the USB host controller
+	pinMode(USBH_RST_PIN, OUTPUT);
+	digitalWrite(USBH_RST_PIN, LOW);
+	digitalWrite(USBH_RST_PIN, HIGH);
+	
 }
 
 //--------------------- PRESET MANAGEMENT ---------------------//
@@ -247,6 +293,66 @@ void readPots()
 #endif
 }
 
+void initLedBars()
+{
+	ledBars[0].firstLedIndex = 0;
+	ledBars[1].firstLedIndex = NUM_LEDS_PER_RING;
+	ledBars[2].firstLedIndex = NUM_LEDS_PER_RING*2;
+	ledBars[3].firstLedIndex = NUM_LEDS_PER_RING*3;
+	ledBars[4].firstLedIndex = NUM_LEDS_PER_RING*7;
+	ledBars[5].firstLedIndex = NUM_LEDS_PER_RING*6;
+	ledBars[6].firstLedIndex = NUM_LEDS_PER_RING*5;
+	ledBars[7].firstLedIndex = NUM_LEDS_PER_RING*4;
+
+	ledBars[0].ledMode = PotLedFillGradient;
+	ledBars[1].ledMode = PotLedDot;
+	ledBars[2].ledMode = PotLedDotGradient;
+	ledBars[3].ledMode = PotLedFillGradient;
+
+	ledBars[4].ledMode = PotLedFillGradient;
+	ledBars[5].ledMode = PotLedDot;
+	ledBars[6].ledMode = PotLedDotGradient;
+	ledBars[7].ledMode = PotLedFillGradient;
+
+	for(uint8_t i=0; i<NUM_POTS; i++)
+	{
+		ledBars[i].numLeds = 21;
+		
+		ledBars[i].dataDirection = 0;
+		if(i < 4)
+			ledBars[i].mode = PotCentred;
+
+		else
+			ledBars[i].mode = PotNormal;
+
+		ledBars[i].wrap = PotWrap;
+		ledBars[i].value = 0;
+		ledBar_Update(&ledBars[i]);
+	}
+	ledBars[0].colours[0] = csvNeonPink;
+	ledBars[0].colours[1] = csvNeonLightBlue;
+
+	ledBars[1].colours[0] = csvNeonPink;
+	ledBars[1].colours[1] = csvNeonLightBlue;
+
+	ledBars[2].colours[0] = csvNeonLime;
+	ledBars[2].colours[1] = csvNeonRed;
+
+	ledBars[3].colours[0] = csvNeonLime;
+	ledBars[3].colours[1] = csvNeonRed;
+
+	ledBars[4].colours[0] = csvNeonPink;
+	ledBars[4].colours[1] = csvNeonLightBlue;
+
+	ledBars[5].colours[0] = csvNeonPink;
+	ledBars[5].colours[1] = csvNeonLightBlue;
+
+	ledBars[6].colours[0] = csvNeonLime;
+	ledBars[6].colours[1] = csvNeonRed;
+
+	ledBars[7].colours[0] = csvNeonLime;
+	ledBars[7].colours[1] = csvNeonRed;
+}
 
 //--------------------- MIDI CALLBACK HANDLERS ---------------------//
 void assignMidiCallbacks()
