@@ -2,7 +2,7 @@
 	"Configurations": [
 	  {
 		 "Version": "0.1.1",
-		 "URL": "https://example.com/myimages/example.esp32_dev.v2.bin"
+		 "URL": "https://github.com/Pirate-MIDI/Spin/raw/refs/heads/main/Firmware/.pio/build/spin-v1-x-0/spin_v0.1.0.0.bin"
 	  }
 	]
  }
