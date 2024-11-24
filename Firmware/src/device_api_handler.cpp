@@ -4,6 +4,8 @@
 #include "ArduinoJson.h"
 #include "math.h"
 #include "esp32-hal-tinyusb.h" // required for entering download mode
+#include "midi_handling.h"
+#include "wifi_management.h"
 
 // Transmit functions
 void sendCheckResponse(uint8_t transport)
@@ -108,6 +110,14 @@ void ctrlCommandHandler(char* appData, uint8_t transport)
 				else if(strcmp(command, USB_BANK_DOWN_STRING) == 0)
 				{
 					// todo
+				}
+				else if(strcmp(command, "turnOffBLE") == 0)
+				{
+					//turnOffBLE();
+				}
+				else if(strcmp(command, "turnOnWifi") == 0)
+				{
+					wifi_Connect("SpinAP", "SpinAP", NULL);
 				}
 			}
 			else

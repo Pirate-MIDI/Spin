@@ -2,7 +2,7 @@
 
 #include "Arduino.h"
 #include "device_api.h"
-
+#include "ota_pull.h"
 
 const char* host = "Spin";
 const char* apName = "SpinAP";
@@ -32,7 +32,7 @@ void setup()
 	
 	// Serial config
 	Serial.begin(9600);
-	delay(200);
+	delay(2000);
 	Serial.print("Booting - ");
 	//bootCheck();
 
@@ -51,14 +51,22 @@ void setup()
 
 	
 	
-
+	delay(1000);
 	midi_Init();
 	//wifi_Connect("uLoop", "uLoopAP", "password");	
+	wifi_Connect("Spin", "SpinAP", NULL);
+	ESP32OTAPull ota;
+	int ret = ota.CheckForOTAUpdate("http://example.com/myimages/example.json", "0.1.0");
+	//ota_Begin();
 	
 }
 
 void loop()
 {
+	if(wifi_ConnectionStatus())
+	{
+		ota_Loop();
+	}
 	readPots();
 	for(uint8_t i=0; i<NUM_POTS; i++)
 	{
@@ -73,6 +81,7 @@ void loop()
 	{
 		deviceApi_Handler(deviceApiBuffer, 0);
 	}
+	
 }
 
 
