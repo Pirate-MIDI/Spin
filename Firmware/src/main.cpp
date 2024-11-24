@@ -56,7 +56,8 @@ void setup()
 	//wifi_Connect("uLoop", "uLoopAP", "password");	
 	wifi_Connect("Spin", "SpinAP", NULL);
 	ESP32OTAPull ota;
-	int ret = ota.CheckForOTAUpdate("http://example.com/myimages/example.json", "0.1.0");
+	int ret = ota.CheckForOTAUpdate("https://github.com/Pirate-MIDI/Spin/raw/refs/heads/main/Firmware/ota_configuration.json", "0.1.0");
+	Serial.println(ret);
 	//ota_Begin();
 	
 }
