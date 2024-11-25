@@ -2,7 +2,7 @@
 	"Configurations": [
 	  {
 		 "Version": "0.1.1",
-		 "URL": "https://github.com/Pirate-MIDI/Spin/raw/refs/heads/main/Firmware/.pio/build/spin-v1-x-0/spin_v0.1.0.0.bin"
+		 "URL": "https://raw.githubusercontent.com/Pirate-MIDI/Spin/refs/heads/main/Firmware/.pio/build/spin-v1-x-0/spin_v0.1.0.0.bin"
 	  }
 	]
  }
