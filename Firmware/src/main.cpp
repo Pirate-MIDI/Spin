@@ -1,20 +1,22 @@
-#include "spin.h"
+//#include "spin.h"
 
 #include "Arduino.h"
 #include "device_api.h"
+#include "spin.h"
 #include "ota_pull.h"
+
+
+#define GITHUB_TOKEN "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"
 
 const char* host = "Spin";
 const char* apName = "SpinAP";
 
 char deviceApiBuffer[8192];
 
-
-
+const char url[] = "https://raw.githubusercontent.com/Pirate-MIDI/Spin/refs/heads/main/Firmware/ota_configuration.json";
 
 void setup()
 {
-	
 	initPins();
 	
 	// LED init
@@ -48,22 +50,25 @@ void setup()
 	Serial.println(ESP.getPsramSize());
 	Serial.print("Free PSRAM: %d");
 	Serial.println(ESP.getFreePsram());
-
 	
-	
-	delay(1000);
 	midi_Init();
-	//wifi_Connect("uLoop", "uLoopAP", "password");	
+
 	wifi_Connect("Spin", "SpinAP", NULL);
+	wifi_CheckConnectionPing();
+
+	const char url[] = "https://raw.githubusercontent.com/Pirate-MIDI/Spin/refs/heads/main/Firmware/ota_configuration.json";
+	Serial.println(ota_GetLatestVersion(url));
 	ESP32OTAPull ota;
-	int ret = ota.CheckForOTAUpdate("https://github.com/Pirate-MIDI/Spin/raw/refs/heads/main/Firmware/ota_configuration.json", "0.1.0");
-	Serial.println(ret);
-	//ota_Begin();
-	
+	//Serial.println(ota.CheckForOTAUpdate(url, "0.1.0", ota.UPDATE_AND_BOOT));
+	//testOTA();
+
+
 }
+
 
 void loop()
 {
+	mainProcess();
 	if(wifi_ConnectionStatus())
 	{
 		ota_Loop();
@@ -76,13 +81,14 @@ void loop()
 	FastLED.show();
 	
 	midi_ReadAll();
-
+	
 	//delay(2);
 	if(Serial.available())
 	{
 		deviceApi_Handler(deviceApiBuffer, 0);
 	}
-	
+	Serial.println(ota_GetLatestVersion(url));
+	delay(5000);
 }
 
 

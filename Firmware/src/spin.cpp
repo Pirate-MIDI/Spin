@@ -146,9 +146,9 @@ void initPins()
 	pca9555.digitalWrite(ENC1_RED_CHANNEL, HIGH);
 	pca9555.digitalWrite(ENC2_RED_CHANNEL, HIGH);
 
-	pca9555.digitalWrite(ENC1_GREEN_CHANNEL, LOW);
+	pca9555.digitalWrite(ENC1_GREEN_CHANNEL, HIGH);
 	pca9555.digitalWrite(ENC1_BLUE_CHANNEL, HIGH);
-	pca9555.digitalWrite(ENC2_GREEN_CHANNEL, LOW);
+	pca9555.digitalWrite(ENC2_GREEN_CHANNEL, HIGH);
 	pca9555.digitalWrite(ENC2_BLUE_CHANNEL, HIGH);
 
 	pca9555.digitalWrite(USBH_ENABLE_CHANNEL, HIGH);
@@ -159,6 +159,16 @@ void initPins()
 	digitalWrite(USBH_RST_PIN, LOW);
 	digitalWrite(USBH_RST_PIN, HIGH);
 	
+}
+
+void mainProcess()
+{
+	static int flash = 0;
+	if(millis() % 500 == 0)
+	{
+		pca9555.digitalWrite(ENC2_BLUE_CHANNEL, flash);
+		flash = !flash;
+	}
 }
 
 //--------------------- PRESET MANAGEMENT ---------------------//

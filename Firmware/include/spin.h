@@ -84,7 +84,7 @@ extern CONTPOT pots[];
 void bootCheck();
 void newDeviceConfig();
 void standardBoot();
-
+void mainProcess();
 void getFlashUid(char* str);
 
 void initPins();

@@ -6,6 +6,8 @@
 #include "esp32-hal-tinyusb.h" // required for entering download mode
 #include "midi_handling.h"
 #include "wifi_management.h"
+#include "ota_pull.h"
+#include "ota_updating.h"
 
 // Transmit functions
 void sendCheckResponse(uint8_t transport)
@@ -118,6 +120,16 @@ void ctrlCommandHandler(char* appData, uint8_t transport)
 				else if(strcmp(command, "turnOnWifi") == 0)
 				{
 					wifi_Connect("SpinAP", "SpinAP", NULL);
+				}
+				else if(strcmp(command, "checkFirmwareUpdate") == 0)
+				{
+					ESP32OTAPull ota;
+					const char url[] = "https://raw.githubusercontent.com/Pirate-MIDI/Spin/refs/heads/main/Firmware/ota_configuration.json";
+					ota.CheckForOTAUpdate(url, "0.1.0", ota.UPDATE_AND_BOOT);
+				}
+				else if(strcmp(command, "checkLatestFirmwareVersion") == 0)
+				{
+					Serial.println(ota_GetLatestVersion("https://raw.githubusercontent.com/Pirate-MIDI/Spin/refs/heads/main/Firmware/ota_configuration.json"));
 				}
 			}
 			else

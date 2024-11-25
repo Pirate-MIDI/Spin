@@ -1,0 +1,24 @@
+.pio/build/spin-v1-x-0/libfa2/FastLED/fx/storage/filebuffer.cpp.o: \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/fx/storage/filebuffer.cpp \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/fx/storage/filebuffer.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/file_system.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/namespace.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/ref.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/scoped_ptr.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/template_magic.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/fx/video.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/fx/fx2d.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/xymap.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/force_inline.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/xmap.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/lut.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/allocator.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/crgb.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/chsv.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/color.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/lib8tion/types.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/fx/fx.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/fx/detail/draw_context.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/fx/detail/transition.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/fx/time.h \
+ .pio/libdeps/spin-v1-x-0/FastLED/src/callback.h
