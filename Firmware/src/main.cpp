@@ -48,12 +48,15 @@ void setup()
 	Serial.println(ESP.getFreePsram());
 	
 	midi_Init();
-	
-	//wifi_Connect("Spin", "SpinAP", NULL);
+	wifiEnabled = 1;
+	wifi_Connect(WIFI_HOSTNAME, WIFI_AP_SSID, NULL);
 	//wifi_CheckConnectionPing();
+
 
 	const char url[] = "https://raw.githubusercontent.com/Pirate-MIDI/Spin/refs/heads/main/Firmware/ota_configuration.json";
 	//Serial.println(ota_GetLatestVersion(url));
+
+	midi_Init();
 }
 
 
