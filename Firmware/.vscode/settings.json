@@ -18,7 +18,19 @@
 		"initializer_list": "cpp",
 		"*.ulp": "cpp",
 		"new": "cpp",
-		"regex": "cpp"
+		"regex": "cpp",
+		"bitset": "cpp",
+		"chrono": "cpp",
+		"cmath": "cpp",
+		"condition_variable": "cpp",
+		"exception": "cpp",
+		"functional": "cpp",
+		"istream": "cpp",
+		"ostream": "cpp",
+		"numeric": "cpp",
+		"sstream": "cpp",
+		"streambuf": "cpp",
+		"system_error": "cpp"
 	},
     "C_Cpp.dimInactiveRegions": true
 }

@@ -115,11 +115,19 @@ void ctrlCommandHandler(char* appData, uint8_t transport)
 				}
 				else if(strcmp(command, "turnOffBLE") == 0)
 				{
-					//turnOffBLE();
+					turnOffBLE();
+				}
+				else if(strcmp(command, "turnOnBLE") == 0)
+				{
+					turnOnBLE();
 				}
 				else if(strcmp(command, "turnOnWifi") == 0)
 				{
 					wifi_Connect("SpinAP", "SpinAP", NULL);
+				}
+				else if(strcmp(command, "turnOffWifi") == 0)
+				{
+					//wifi_Connect("SpinAP", "SpinAP", NULL);
 				}
 				else if(strcmp(command, "checkFirmwareUpdate") == 0)
 				{

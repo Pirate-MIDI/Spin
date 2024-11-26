@@ -27,7 +27,6 @@ void setup()
 	FastLED.show();
 	initLedBars();
 	// Read stored global config settings
-
 	
 	assignMidiCallbacks();
 	byte* testBuffer = (byte*)ps_malloc(500000);
@@ -37,9 +36,6 @@ void setup()
 	delay(2000);
 	Serial.print("Booting - ");
 	//bootCheck();
-
-	
-
 	
 	// Print system diagnostic data
 	Serial.print("Total heap: %d");
@@ -52,26 +48,22 @@ void setup()
 	Serial.println(ESP.getFreePsram());
 	
 	midi_Init();
-
-	wifi_Connect("Spin", "SpinAP", NULL);
-	wifi_CheckConnectionPing();
+	
+	//wifi_Connect("Spin", "SpinAP", NULL);
+	//wifi_CheckConnectionPing();
 
 	const char url[] = "https://raw.githubusercontent.com/Pirate-MIDI/Spin/refs/heads/main/Firmware/ota_configuration.json";
-	Serial.println(ota_GetLatestVersion(url));
-	ESP32OTAPull ota;
-	//Serial.println(ota.CheckForOTAUpdate(url, "0.1.0", ota.UPDATE_AND_BOOT));
-	//testOTA();
-
-
+	//Serial.println(ota_GetLatestVersion(url));
 }
 
 
 void loop()
 {
+	
 	mainProcess();
 	if(wifi_ConnectionStatus())
 	{
-		ota_Loop();
+		//ota_Loop();
 	}
 	readPots();
 	for(uint8_t i=0; i<NUM_POTS; i++)
@@ -87,8 +79,7 @@ void loop()
 	{
 		deviceApi_Handler(deviceApiBuffer, 0);
 	}
-	Serial.println(ota_GetLatestVersion(url));
-	delay(5000);
+	//Serial.println(ota_GetLatestVersion(url));
 }
 
 
