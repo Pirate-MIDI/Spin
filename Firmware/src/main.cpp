@@ -5,8 +5,11 @@
 #include "spin.h"
 #include "ota_pull.h"
 
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <WiFiUdp.h>
 
-#define GITHUB_TOKEN "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"
+#include <AppleMIDI.h>
 
 const char* host = "Spin";
 const char* apName = "SpinAP";
@@ -33,7 +36,8 @@ void setup()
 	
 	// Serial config
 	Serial.begin(9600);
-	delay(2000);
+	
+	delay(200);
 	Serial.print("Booting - ");
 	//bootCheck();
 	
@@ -46,19 +50,20 @@ void setup()
 	Serial.println(ESP.getPsramSize());
 	Serial.print("Free PSRAM: %d");
 	Serial.println(ESP.getFreePsram());
-	
-	midi_Init();
+
 	wifiEnabled = 1;
+	midi_Init();
 	wifi_Connect(WIFI_HOSTNAME, WIFI_AP_SSID, NULL);
+	turnOnWifiRtp();
 	//wifi_CheckConnectionPing();
+
 
 
 	const char url[] = "https://raw.githubusercontent.com/Pirate-MIDI/Spin/refs/heads/main/Firmware/ota_configuration.json";
 	//Serial.println(ota_GetLatestVersion(url));
 
-	midi_Init();
+	
 }
-
 
 void loop()
 {
@@ -68,21 +73,27 @@ void loop()
 	{
 		//ota_Loop();
 	}
+	
 	readPots();
+	
 	for(uint8_t i=0; i<NUM_POTS; i++)
 	{
 		ledBar_Update(&ledBars[i]);
 	}
+	
 	FastLED.show();
 	
-	midi_ReadAll();
 	
 	//delay(2);
 	if(Serial.available())
 	{
 		deviceApi_Handler(deviceApiBuffer, 0);
 	}
-	//Serial.println(ota_GetLatestVersion(url));
+	
+	// Listen to incoming MIDI from all sources
+	//testMidi();
+	midi_ReadAll();
+	
 }
 
 

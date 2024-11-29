@@ -163,12 +163,7 @@ void initPins()
 
 void mainProcess()
 {
-	static int flash = 0;
-	if(millis() % 500 == 0)
-	{
-		pca9555.digitalWrite(ENC2_BLUE_CHANNEL, flash);
-		flash = !flash;
-	}
+	
 }
 
 //--------------------- PRESET MANAGEMENT ---------------------//
