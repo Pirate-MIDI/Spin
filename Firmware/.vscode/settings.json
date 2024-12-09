@@ -30,7 +30,8 @@
 		"numeric": "cpp",
 		"sstream": "cpp",
 		"streambuf": "cpp",
-		"system_error": "cpp"
+		"system_error": "cpp",
+		"ringbuf.h": "c"
 	},
     "C_Cpp.dimInactiveRegions": true
 }

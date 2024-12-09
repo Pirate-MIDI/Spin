@@ -21,6 +21,7 @@ void sendCheckResponse(uint8_t transport)
 	doc["uId"] = ((ESP.getEfuseMac() << 40) >> 40);
 	doc["deviceName"] = "Spin";
 	doc["profileId"] = 0;
+	doc["filler"] = "filler";
 
 	if(transport == USB_CDC_TRANSPORT)
 	{

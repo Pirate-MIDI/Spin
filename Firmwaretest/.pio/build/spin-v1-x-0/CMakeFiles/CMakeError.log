@@ -1,0 +1,80 @@
+Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: C:/Users/samsp/Documents/Github/PirateMIDI/Spin/Firmwaretest/.pio/build/spin-v1-x-0/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/samsp/.platformio/packages/tool-ninja/ninja.exe cmTC_b3065 && [1/2] Building C object CMakeFiles/cmTC_b3065.dir/src.c.obj
+[2/2] Linking C executable cmTC_b3065
+FAILED: cmTC_b3065 
+cmd.exe /C "cd . && C:\Users\samsp\.platformio\packages\toolchain-xtensa-esp32s3\bin\xtensa-esp32s3-elf-gcc.exe -mlongcalls  CMakeFiles/cmTC_b3065.dir/src.c.obj -o cmTC_b3065   && cd ."
+c:/users/samsp/.platformio/packages/toolchain-xtensa-esp32s3/bin/../lib/gcc/xtensa-esp32s3-elf/12.2.0/../../../../xtensa-esp32s3-elf/bin/ld.exe: CMakeFiles/cmTC_b3065.dir/src.c.obj:(.literal+0x10): warning: pthread_join is not implemented and will always fail
+c:/users/samsp/.platformio/packages/toolchain-xtensa-esp32s3/bin/../lib/gcc/xtensa-esp32s3-elf/12.2.0/../../../../xtensa-esp32s3-elf/bin/ld.exe: CMakeFiles/cmTC_b3065.dir/src.c.obj:(.literal+0x18): warning: pthread_exit is not implemented and will always fail
+c:/users/samsp/.platformio/packages/toolchain-xtensa-esp32s3/bin/../lib/gcc/xtensa-esp32s3-elf/12.2.0/../../../../xtensa-esp32s3-elf/bin/ld.exe: CMakeFiles/cmTC_b3065.dir/src.c.obj:(.literal+0x8): warning: pthread_detach is not implemented and will always fail
+c:/users/samsp/.platformio/packages/toolchain-xtensa-esp32s3/bin/../lib/gcc/xtensa-esp32s3-elf/12.2.0/../../../../xtensa-esp32s3-elf/bin/ld.exe: CMakeFiles/cmTC_b3065.dir/src.c.obj:(.literal+0x4): warning: pthread_create is not implemented and will always fail
+c:/users/samsp/.platformio/packages/toolchain-xtensa-esp32s3/bin/../lib/gcc/xtensa-esp32s3-elf/12.2.0/../../../../xtensa-esp32s3-elf/bin/ld.exe: CMakeFiles/cmTC_b3065.dir/src.c.obj:(.literal+0xc): warning: pthread_cancel is not implemented and will always fail
+c:/users/samsp/.platformio/packages/toolchain-xtensa-esp32s3/bin/../lib/gcc/xtensa-esp32s3-elf/12.2.0/../../../../xtensa-esp32s3-elf/bin/ld.exe: CMakeFiles/cmTC_b3065.dir/src.c.obj:(.literal+0x4): undefined reference to `pthread_atfork'
+c:/users/samsp/.platformio/packages/toolchain-xtensa-esp32s3/bin/../lib/gcc/xtensa-esp32s3-elf/12.2.0/../../../../xtensa-esp32s3-elf/bin/ld.exe: CMakeFiles/cmTC_b3065.dir/src.c.obj: in function `main':
+src.c:(.text+0x3f): undefined reference to `pthread_atfork'
+collect2.exe: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+#include <pthread.h>
+
+static void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: C:/Users/samsp/Documents/Github/PirateMIDI/Spin/Firmwaretest/.pio/build/spin-v1-x-0/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/samsp/.platformio/packages/tool-ninja/ninja.exe cmTC_fe8d8 && [1/2] Building C object CMakeFiles/cmTC_fe8d8.dir/CheckFunctionExists.c.obj
+[2/2] Linking C executable cmTC_fe8d8
+FAILED: cmTC_fe8d8 
+cmd.exe /C "cd . && C:\Users\samsp\.platformio\packages\toolchain-xtensa-esp32s3\bin\xtensa-esp32s3-elf-gcc.exe -mlongcalls  -DCHECK_FUNCTION_EXISTS=pthread_create  CMakeFiles/cmTC_fe8d8.dir/CheckFunctionExists.c.obj -o cmTC_fe8d8  -lpthreads && cd ."
+c:/users/samsp/.platformio/packages/toolchain-xtensa-esp32s3/bin/../lib/gcc/xtensa-esp32s3-elf/12.2.0/../../../../xtensa-esp32s3-elf/bin/ld.exe: cannot find -lpthreads: No such file or directory
+c:/users/samsp/.platformio/packages/toolchain-xtensa-esp32s3/bin/../lib/gcc/xtensa-esp32s3-elf/12.2.0/../../../../xtensa-esp32s3-elf/bin/ld.exe: CMakeFiles/cmTC_fe8d8.dir/CheckFunctionExists.c.obj:(.literal+0x0): warning: pthread_create is not implemented and will always fail
+collect2.exe: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
+
+
+
+Determining if the function pthread_create exists in the pthread failed with the following output:
+Change Dir: C:/Users/samsp/Documents/Github/PirateMIDI/Spin/Firmwaretest/.pio/build/spin-v1-x-0/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/samsp/.platformio/packages/tool-ninja/ninja.exe cmTC_254c3 && [1/2] Building C object CMakeFiles/cmTC_254c3.dir/CheckFunctionExists.c.obj
+[2/2] Linking C executable cmTC_254c3
+FAILED: cmTC_254c3 
+cmd.exe /C "cd . && C:\Users\samsp\.platformio\packages\toolchain-xtensa-esp32s3\bin\xtensa-esp32s3-elf-gcc.exe -mlongcalls  -DCHECK_FUNCTION_EXISTS=pthread_create  CMakeFiles/cmTC_254c3.dir/CheckFunctionExists.c.obj -o cmTC_254c3  -lpthread && cd ."
+c:/users/samsp/.platformio/packages/toolchain-xtensa-esp32s3/bin/../lib/gcc/xtensa-esp32s3-elf/12.2.0/../../../../xtensa-esp32s3-elf/bin/ld.exe: cannot find -lpthread: No such file or directory
+c:/users/samsp/.platformio/packages/toolchain-xtensa-esp32s3/bin/../lib/gcc/xtensa-esp32s3-elf/12.2.0/../../../../xtensa-esp32s3-elf/bin/ld.exe: CMakeFiles/cmTC_254c3.dir/CheckFunctionExists.c.obj:(.literal+0x0): warning: pthread_create is not implemented and will always fail
+collect2.exe: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
+
+
+
+Determining if compiler accepts -pthread failed with the following output:
+Change Dir: C:/Users/samsp/Documents/Github/PirateMIDI/Spin/Firmwaretest/.pio/build/spin-v1-x-0/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/samsp/.platformio/packages/tool-ninja/ninja.exe cmTC_00d76 && [1/2] Building C object CMakeFiles/cmTC_00d76.dir/CheckForPthreads.c.obj
+[2/2] Linking C executable cmTC_00d76
+FAILED: cmTC_00d76 
+cmd.exe /C "cd . && C:\Users\samsp\.platformio\packages\toolchain-xtensa-esp32s3\bin\xtensa-esp32s3-elf-gcc.exe -mlongcalls  CMakeFiles/cmTC_00d76.dir/CheckForPthreads.c.obj -o cmTC_00d76  -pthread && cd ."
+xtensa-esp32s3-elf-gcc.exe: error: unrecognized command-line option '-pthread'
+ninja: build stopped: subcommand failed.
+
+
+

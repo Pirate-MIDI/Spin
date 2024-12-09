@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/samsp/Documents/Github/PirateMIDI/Spin/Firmwaretest/.pio/build/spin-v1-x-0/CMakeFiles/bootloader"
+		},
+		{
+			"file" : "C:/Users/samsp/Documents/Github/PirateMIDI/Spin/Firmwaretest/.pio/build/spin-v1-x-0/CMakeFiles/bootloader.rule"
+		},
+		{
+			"file" : "C:/Users/samsp/Documents/Github/PirateMIDI/Spin/Firmwaretest/.pio/build/spin-v1-x-0/CMakeFiles/bootloader-complete.rule"
+		},
+		{
+			"file" : "C:/Users/samsp/Documents/Github/PirateMIDI/Spin/Firmwaretest/.pio/build/spin-v1-x-0/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule"
+		},
+		{
+			"file" : "C:/Users/samsp/Documents/Github/PirateMIDI/Spin/Firmwaretest/.pio/build/spin-v1-x-0/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule"
+		},
+		{
+			"file" : "C:/Users/samsp/Documents/Github/PirateMIDI/Spin/Firmwaretest/.pio/build/spin-v1-x-0/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule"
+		},
+		{
+			"file" : "C:/Users/samsp/Documents/Github/PirateMIDI/Spin/Firmwaretest/.pio/build/spin-v1-x-0/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule"
+		},
+		{
+			"file" : "C:/Users/samsp/Documents/Github/PirateMIDI/Spin/Firmwaretest/.pio/build/spin-v1-x-0/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/samsp/Documents/Github/PirateMIDI/Spin/Firmwaretest/.pio/build/spin-v1-x-0/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule"
+		},
+		{
+			"file" : "C:/Users/samsp/Documents/Github/PirateMIDI/Spin/Firmwaretest/.pio/build/spin-v1-x-0/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"bootloader"
+		],
+		"name" : "bootloader"
+	}
+}

@@ -2,7 +2,7 @@
 
 #include "Arduino.h"
 #include "device_api.h"
-#include "spin.h"
+//#include "spin.h"
 #include "ota_pull.h"
 
 #include <WiFi.h>
@@ -10,6 +10,8 @@
 #include <WiFiUdp.h>
 
 #include <AppleMIDI.h>
+
+#include "usb_comms.h"
 
 const char* host = "Spin";
 const char* apName = "SpinAP";
@@ -20,6 +22,7 @@ const char url[] = "https://raw.githubusercontent.com/Pirate-MIDI/Spin/refs/head
 
 void setup()
 {
+	/*
 	initPins();
 	
 	// LED init
@@ -37,11 +40,12 @@ void setup()
 	// Serial config
 	Serial.begin(9600);
 	
-	delay(200);
+	//delay(1000);
 	Serial.print("Booting - ");
 	//bootCheck();
 	
 	// Print system diagnostic data
+	
 	Serial.print("Total heap: %d");
 	Serial.println(ESP.getHeapSize());
 	Serial.print("Free heap: %d");
@@ -50,9 +54,11 @@ void setup()
 	Serial.println(ESP.getPsramSize());
 	Serial.print("Free PSRAM: %d");
 	Serial.println(ESP.getFreePsram());
+	
 
 	wifiEnabled = 1;
 	midi_Init();
+	//turnOnBLE();
 	wifi_Connect(WIFI_HOSTNAME, WIFI_AP_SSID, NULL);
 	turnOnWifiRtp();
 	//wifi_CheckConnectionPing();
@@ -61,8 +67,12 @@ void setup()
 
 	const char url[] = "https://raw.githubusercontent.com/Pirate-MIDI/Spin/refs/heads/main/Firmware/ota_configuration.json";
 	//Serial.println(ota_GetLatestVersion(url));
-
+	*/
 	
+
+	// init USB
+    Serial0.println("Init USB");
+    init_usb_comms();
 }
 
 void loop()

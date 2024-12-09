@@ -1,0 +1,15 @@
+fastled/FastLED@^3.6.0
+https://github.com/tzapu/WiFiManager.git
+https://github.com/rppicomidi/usb_midi_host.git
+lathoub/BLE-MIDI
+bblanchon/ArduinoJson@^7.0.2
+https://github.com/samspencer5991/mcp3008.git
+https://github.com/samspencer5991/LED-Bar.git
+https://github.com/mikalhart/ESP32-OTA-Pull.git
+fortyseveneffects/MIDI Library@^5.0.2
+ayushsharma82/ElegantOTA@^3.1.6
+https://github.com/samspencer5991/Continuous-Pots.git
+https://github.com/marian-craciunescu/ESP32Ping.git
+https://github.com/samspencer5991/Device-Api.git
+lathoub/AppleMIDI@^3.3.0
+adafruit/Adafruit TinyUSB Library @3.3.1
