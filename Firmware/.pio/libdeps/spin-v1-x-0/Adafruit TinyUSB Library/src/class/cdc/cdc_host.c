@@ -854,6 +854,17 @@ static bool acm_open(uint8_t daddr, tusb_desc_interface_t const* itf_desc, uint1
   if (itf_desc->bNumEndpoints == 1) {
     TU_ASSERT(TUSB_DESC_ENDPOINT == tu_desc_type(p_desc));
     tusb_desc_endpoint_t const* desc_ep = (tusb_desc_endpoint_t const*) p_desc;
+	 
+	 // The Arduino Due reports Full speed, and packet size of 512 byes, which is invalid.
+	 
+	if ( TUSB_SPEED_HIGH == tuh_speed_get(daddr) && desc_ep->wMaxPacketSize > 64 )
+	{
+		// Modify the enpoint descriptor to set max packet size to 64 bytes
+		tusb_desc_endpoint_t *tmp_desc_ep = (tusb_desc_endpoint_t *) p_desc;
+		printf("EP 0x%02X with wrong wMaxPacketSize %d - fixed to 64", tmp_desc_ep->bEndpointAddress, tmp_desc_ep->wMaxPacketSize);
+		tmp_desc_ep->wMaxPacketSize = 64;
+	}
+	
 
     TU_ASSERT(tuh_edpt_open(daddr, desc_ep));
     p_cdc->ep_notif = desc_ep->bEndpointAddress;

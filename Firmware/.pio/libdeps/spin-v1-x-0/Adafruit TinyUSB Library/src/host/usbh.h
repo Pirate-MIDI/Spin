@@ -101,6 +101,7 @@ typedef union {
 // Invoked when a device is mounted (configured)
 TU_ATTR_WEAK void tuh_mount_cb (uint8_t daddr);
 
+
 // Invoked when a device failed to mount during enumeration process
 // TU_ATTR_WEAK void tuh_mount_failed_cb (uint8_t daddr);
 

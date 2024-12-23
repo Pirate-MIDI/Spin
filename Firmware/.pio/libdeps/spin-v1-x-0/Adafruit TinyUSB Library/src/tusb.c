@@ -140,10 +140,21 @@ bool tu_edpt_release(tu_edpt_state_t* ep_state, osal_mutex_t mutex) {
 }
 
 bool tu_edpt_validate(tusb_desc_endpoint_t const* desc_ep, tusb_speed_t speed) {
-  uint16_t const max_packet_size = tu_edpt_packet_size(desc_ep);
+  uint16_t max_packet_size = tu_edpt_packet_size(desc_ep);
   TU_LOG2("  Open EP %02X with Size = %u\r\n", desc_ep->bEndpointAddress, max_packet_size);
 
+
+	if (max_packet_size > 64 )
+	{
+		// Modify the enpoint descriptor to set max packet size to 64 bytes
+		tusb_desc_endpoint_t *tmp_desc_ep = (tusb_desc_endpoint_t *) desc_ep;
+		tmp_desc_ep->wMaxPacketSize = 64;
+		log_printf("EP 0x%02X with wrong wMaxPacketSize %d - fixed to %d\n", tmp_desc_ep->bEndpointAddress, tmp_desc_ep->wMaxPacketSize, tu_edpt_packet_size(desc_ep));
+		tmp_desc_ep->wMaxPacketSize = 64;
+	}
+	max_packet_size = tu_edpt_packet_size(desc_ep);
   switch (desc_ep->bmAttributes.xfer) {
+
     case TUSB_XFER_ISOCHRONOUS: {
       uint16_t const spec_size = (speed == TUSB_SPEED_HIGH ? 1024 : 1023);
       TU_ASSERT(max_packet_size <= spec_size);
