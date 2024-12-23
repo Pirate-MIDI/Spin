@@ -153,7 +153,7 @@ void loop()
 	*/
 }
 
-
+/*
 extern "C" {
 
 // Invoked when a device with CDC interface is mounted
@@ -171,4 +171,4 @@ void tuh_cdc_umount_cb(uint8_t idx) {
 }
 
 }
-
+*/
